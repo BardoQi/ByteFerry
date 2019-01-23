@@ -19,7 +19,9 @@ use ByteFerry\Exceptions\InvalidArgumentException;
  */
 class OutputStream extends StreamIo
 {
-
+    /**
+     * Methods of primitive types
+     */
     /**
      * alias of method writeInt8()
      * @method writeByte()
@@ -135,15 +137,45 @@ class OutputStream extends StreamIo
     /**
      * alias of method replaceInt64()
      * @method skipChar()
+     */
+    /**
+     * alias of method skipInt8()
      * @method skipByte()
+     */
+    /**
+     * alias of method skipInt8()
      * @method skipInt8()
+     */
+    /**
+     * alias of method skipInt8()
      * @method skipShort()
+     */
+    /**
+     * alias of method skipInt16()
      * @method skipWord()
+     */
+    /**
+     * alias of method skipInt16()
      * @method skipInt16()
+     */
+    /**
+     * alias of method skipInt32()
      * @method skipInt()
+     */
+    /**
+     * alias of method skipInt32()
      * @method skipInt32()
+     */
+    /**
+     * alias of method skipInt32()
      * @method skipDword()
+     */
+    /**
+     * alias of method skipInt64()
      * @method skipLong()
+     */
+    /**
+     * alias of method skipInt64()
      * @method skipInt64()
      */
 

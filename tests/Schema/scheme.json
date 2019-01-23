@@ -1,0 +1,828 @@
+{
+  "comment":"通讯协议定义文件",
+  "type_list":{
+    "message":{
+      "comment":"消息定义",
+      "byte_fields":{
+        "stx":{
+          "comment":"包开始的标识位",
+          "pos":0,
+          "length":1,
+          "data_type":"int8",
+          "required":true
+        },
+        "message_header":{
+          "comment":"消息头",
+          "pos":1,
+          "length":15,
+          "data_type":"message_header",
+          "required":true
+        },
+        "message_body":{
+          "comment":"消息体",
+          "pos":16,
+          "length":null,
+          "data_type":"message_body",
+          "required":false
+        },
+        "checksum":{
+          "comment":"包的校验码",
+          "pos":-2,
+          "length":1,
+          "data_type":"int8",
+          "required":true
+          },
+        "etx":{
+          "comment":"包结束的标识位",
+          "pos":-1,
+          "length":1,
+          "data_type":"int8",
+          "required":true
+        }
+      },
+      "after_event":"udf_check"
+    },
+    "message_header": {
+      "comment": "消息头",
+      "byte_fields": {
+        "message_type": {
+          "comment": "消息类型",
+          "pos": 0,
+          "length": 1,
+          "data_type": "int8",
+          "required":true
+        },
+        "device_id": {
+          "comment": "设备ID",
+          "pos": 1,
+          "length": 4,
+          "data_type": "int32",
+          "required":true
+        },
+        "message_id": {
+          "comment": "消息ID",
+          "pos": 5,
+          "length": 2,
+          "data_type": "int16",
+          "required":true
+        },
+        "time": {
+          "comment": "发生时间",
+          "pos": 7,
+          "length": 4,
+          "data_type": "int32",
+          "required":true
+        },
+        "flow_id": {
+          "comment": "消息流水号",
+          "pos": 11,
+          "length": 2,
+          "data_type": "int16",
+          "required":true
+        },
+        "body_property": {
+          "comment": "消息体属性",
+          "pos": 13,
+          "length": 2,
+          "data_type": "body_property",
+          "required":true
+        }
+      }
+    },
+    "body_property": {
+      "comment": "消息体属性",
+      "bit_fields": {
+        "body_length": {
+          "comment": "消息长度，udf_开头调用自定义编解码",
+          "pos": 0,
+          "length": 10,
+          "data_type": "bits",
+          "required":true
+        },
+        "reserved": {
+          "comment": "保留位，以后扩展，保留位类型为skip",
+          "pos": 10,
+          "length": 6,
+          "data_type": "skip"
+        }
+      }
+    },
+    "message_body": {
+      "comment": "消息体",
+      "byte_fields": {
+        "one_of": {
+          "key":{
+            "comment": "消息体检索参数",
+            "name":"message_id",
+	    "format":"0x%04X"
+          },
+          "list":{
+            "comment": "消息体检索列表",
+            "data":{
+              "0x0001":{
+                "comment": "终端通用应答",
+                "tag":"client_normal_response",
+                "data_type":"client_normal_response"
+              },
+              "0x8001":{
+                "comment": "平台通用应答",
+                "tag":"client_normal_response",
+                "data_type":"server_normal_response"
+              },
+              "0x0002":{
+                "comment": "终端心跳",
+                "tag":"client_normal_response",
+                "data_type":"null_body"
+              },
+              "0x0100":{
+                "comment": "终端鉴权",
+                "tag":"client_auth",
+                "data_type":"client_auth"
+              },
+              "0x8100":{
+                "comment": "终端鉴权应答",
+                "tag":"server_auth_response",
+                "data_type":"server_auth_response"
+              },
+              "0x0101":{
+                "comment": "终端插拨,终端拨出事件",
+                "tag":"client_plug_away",
+                "data_type":"null_body"
+              },
+              "0x0103":{
+                "comment": "故障上报",
+                "tag":"faults_report",
+                "data_type":"faults_report"
+              },
+              "0x0105":{
+                "comment": "安防状态,车辆碰撞",
+                "tag":"client_collision",
+                "data_type":"null_body"
+              },
+              "0x0106":{
+                "comment": "安防状态,车辆拖吊",
+                "tag":"client_draglift",
+                "data_type":"null_body"
+              },
+              "0x0107":{
+                "comment": "车辆点火",
+                "tag":"client_start",
+                "data_type":"null_body"
+              },
+              "0x0108":{
+                "comment": "车辆熄火",
+                "tag":"client_stop",
+                "data_type":"null_body"
+              },
+              "0x0201":{
+                "comment": "GPS行程数据",
+                "tag":"travel_data",
+                "data_type":"travel_data"
+              },
+              "0x8202":{
+                "comment": "平台查询GPS数据",
+                "tag":"server_travel_query",
+                "data_type":"null_body"
+              },
+              "0x0202":{
+                "comment": "终端应答GPS数据",
+                "tag":"client_travel_response",
+                "data_type":"client_travel_response"
+              },
+              "0x0301":{
+                "comment": "OBD数据",
+                "tag":"client_obd_data",
+                "data_type":"obd_data"
+              },
+              "0x8401":{
+                "comment": "设置终端参数",
+                "tag":"client_param_setting",
+                "data_type":"client_param_setting"
+              },
+              "0x0401":{
+                "comment": "设置终端参数应答",
+                "tag":"client_param_setting_response",
+                "data_type":"client_normal_response"
+              },
+              "0x8402":{
+                "comment": "查询终端参数",
+                "tag":"client_param_query",
+                "data_type":"null_body"
+              },
+              "0x0402":{
+                "comment": "设查询终端参数应答",
+                "tag":"client_param_query_response",
+                "data_type":"client_param_query_response"
+              },
+              "0x8403":{
+                "comment": "查询终端属性",
+                "tag":"client_property_query",
+                "data_type":"null_body"
+              },
+              "0x0403":{
+                "comment": "查询终端属性应答",
+                "tag":"client_property_query_response",
+                "data_type":"client_property_query_response"
+              },
+              "0x8501":{
+                "comment": "终端控制",
+                "tag":"client_control",
+                "data_type":"client_control"
+              },
+              "0x0501":{
+                "comment": "终端控制应答",
+                "tag":"client_control_response",
+                "data_type":"client_param_query_response"
+              }
+            }
+          }
+        }
+      },
+      "required":false
+    },
+    "null_body":{
+      "comment": "空消息体",
+      "pos": 0,
+      "length": 0,
+      "data_type": "skip",
+      "required":false
+    },
+    "client_normal_response":{
+      "comment": "终端通用应答",
+      "byte_fields":{
+        "response_flow_id":{
+          "comment": "应答流水号",
+          "pos": 0,
+          "length": 2,
+          "data_type": "int16",
+          "required":true
+        },
+        "response_message_id":{
+          "comment": "应答消息ID",
+          "pos": 2,
+          "length": 2,
+          "data_type": "int16",
+          "required":true
+        },
+        "response_data":{
+          "comment": "结果",
+          "pos": 4,
+          "length": 1,
+          "data_type": "int8",
+          "after_event":"udf_normal_response",
+          "required":true
+        }
+      }
+    },
+    "server_normal_response":{
+      "comment": "平台通用应答",
+      "byte_fields":{
+        "response_flow_id":{
+          "comment": "应答流水号",
+          "pos": 0,
+          "length": 2,
+          "data_type": "int16",
+          "required":true
+        },
+        "response_message_id":{
+          "comment": "应答消息ID",
+          "pos": 2,
+          "length": 2,
+          "data_type": "int16",
+          "required":true
+        },
+        "response_data":{
+          "comment": "结果",
+          "pos": 4,
+          "length": 1,
+          "data_type": "int8",
+          "required":true
+        }
+      }
+    },
+    "client_auth":{
+      "comment": "终端鉴权",
+      "byte_fields":{
+        "client_id":{
+          "comment": "终端设备ID",
+          "pos": 0,
+          "length": 10,
+          "data_type": "bytes",
+          "required":true
+        }
+      }
+    },
+    "server_auth_response":{
+      "comment": "终端鉴权应答",
+      "byte_fields":{
+        "device_id":{
+          "comment": "终端设备整数ID",
+          "pos": 0,
+          "length": 2,
+          "data_type": "int32",
+          "required":true
+        }
+      }
+    },
+    "faults_report":{
+      "comment": "故障上报",
+      "repeat":true,
+      "data_type": "faults_data",
+      "required":true
+    },
+    "fault_data":{
+      "comment": "故障码",
+      "data_type": "udf_faults_data",
+      "required":true
+    },
+    "travel_data":{
+      "comment": "GPS行程数据",
+      "byte_fields":{
+        "position_property":{
+          "comment": "定位属性",
+          "pos": 0,
+          "length": 1,
+          "data_type": "pos_property",
+          "required":true
+        },
+        "latitude":{
+          "comment": "纬度",
+          "pos": 1,
+          "length": 4,
+          "data_type": "int32",
+          "required":true
+        },
+        "longitude":{
+          "comment": "经度",
+          "pos": 5,
+          "length": 4,
+          "data_type": "int32",
+          "required":true
+        },
+        "altitude":{
+          "comment": "海拨",
+          "pos": 9,
+          "length": 4,
+          "data_type": "float",
+          "required":true
+        },
+        "velocity":{
+          "comment": "速度",
+          "pos": 13,
+          "length": 4,
+          "data_type": "int32",
+          "required":true
+        },
+        "heading":{
+          "comment": "方向",
+          "pos": 17,
+          "length": 1,
+          "data_type": "int8",
+          "required":true
+        }
+      }
+    },
+    "pos_property":{
+      "comment": "GPS定位属性",
+      "bit_fields":{
+        "satellites":{
+          "comment": "卫星数",
+          "pos": 0,
+          "length": 6,
+          "data_type": "bits",
+          "required":true
+        }
+      },
+      "latitude_tag":{
+        "satellites":{
+          "comment": "纬度标识",
+          "pos": 6,
+          "length": 1,
+          "data_type": "bit",
+          "required":true
+        }
+      },
+      "longitude_tag":{
+        "satellites":{
+          "comment": "经度标识",
+          "pos": 7,
+          "length": 1,
+          "data_type": "bit",
+          "required":true
+        }
+      }
+    },
+    "client_travel_response":{
+      "comment": "终端应答GPS数据",
+      "byte_fields":{
+        "response_flow_id":{
+          "comment": "应答流水号",
+          "pos": 0,
+          "length": 2,
+          "data_type": "int16",
+          "required":true
+        },
+        "travel_data_response":{
+          "comment": "应答消息ID",
+          "pos": 2,
+          "length": 18,
+          "data_type": "travel_data",
+          "required":true
+        }
+      }
+    },
+    "obd_data":{
+      "comment": "OBD数据",
+      "pos": 0,
+      "length": null,
+      "repeat":true,
+      "data_type": "obd_data_list",
+      "required":true
+    },
+    "obd_data_list":{
+      "comment": "OBD数据记录列表",
+      "byte_fields": {
+        "pid": {
+          "comment": "OBD数据PID",
+          "pos": 0,
+          "length": 2,
+          "data_type": "int16",
+          "required":true
+        },
+        "data":{
+          "comment": "OBD数据",
+          "pos": 2,
+          "length": null,
+          "data_type": "obd_data_item",
+          "required":true
+        }
+      }
+    },
+    "obd_data_item":{
+      "comment": "OBD数据记录项",
+      "byte_fields": {
+        "one_of": {
+          "key": {
+            "comment": "OBD数据记录项检索键",
+            "name": "pid",
+	    "format":"0x%02X"
+          },
+          "list": {
+            "comment": "OBD数据记录项格式定义",
+            "data":{
+              "0x04":{
+                "comment": "发动机负荷,0~100%",
+                "tag":"engine_load",
+                "length":1,
+                "data_type":"int8",
+                "decode_formula":"A/2.55"
+              },
+              "0x05":{
+                "comment": "冷却液温度,-40~215℃",
+                "tag":"coolant_temp",
+                "length":1,
+                "data_type":"int8",
+                "decode_formula":"A-40"
+              },
+              "0x07":{
+                "comment": "长期燃油修正A, -100~99.2%",
+                "tag":"lt_fuel_trim_a",
+                "length":1,
+                "data_type":"int8",
+                "decode_formula":"(A/1.28)-100"
+              },
+              "0x09":{
+                "comment": "长期燃油修正B, -100~99.2%",
+                "tag":"lt_fuel_trim_b",
+                "length":1,
+                "data_type":"int8",
+                "decode_formula":"(A/1.28)-100"
+              },
+              "0x0A":{
+                "comment": "燃油压力, 0~999KPA",
+                "tag":"fuel_pressure",
+                "length":1,
+                "data_type":"int8",
+                "decode_formula":"3*A"
+              },
+              "0x0C":{
+                "comment": "发动机转速, 0~30000RPM",
+                "tag":"engine_speed",
+                "length":2,
+                "data_type":"int16",
+                "decode_formula":"A/4"
+              },
+              "0x0D":{
+                "comment": "车辆速度, 0~255km/h",
+                "tag":"vehicle_speed",
+                "length":1,
+                "data_type":"int8",
+                "decode_formula":"A"
+              },
+              "0x0E":{
+                "comment": "点火提前角, -63~63.5度",
+                "tag":"timing_advance",
+                "length":2,
+                "data_type":"uint16",
+                "decode_formula":"(A/2)-64"
+              },
+              "0x0F":{
+                "comment": "进气温度, -40~215℃",
+                "tag":"intake_temp",
+                "length":1,
+                "data_type":"int8",
+                "decode_formula":"A-40"
+              },
+              "0x10":{
+                "comment": "进气流量,  0~655.35G/S",
+                "tag":"intake_flow",
+                "length":2,
+                "data_type":"uint16",
+                "decode_formula":"A/100"
+              },
+              "0x11":{
+                "comment": "节气门绝对位置, 0~100%",
+                "tag":"abs_throttle_pos",
+                "length":1,
+                "data_type":"int8",
+                "decode_formula":"A/2.55"
+              },
+              "0x1F":{
+                "comment": "发动时间 0~65535s",
+                "tag":"time_since_engine_start",
+                "length":2,
+                "data_type":"int16",
+                "decode_formula":"A"
+              },
+              "0x21":{
+                "comment": "故障行程,  0~65535km",
+                "tag":"distance_traveled_with_mil_on",
+                "data_type":"int8",
+                "decode_formula":"A"
+              },
+              "0x2F":{
+                "comment": "液位输入, 0~100%",
+                "tag":"fuel_tank_level_input",
+                "length":1,
+                "data_type":"int8",
+                "decode_formula":"A/2.55"
+              },
+              "0x33":{
+                "comment": "绝对气压, 0~255KPA",
+                "tag":"abs_air_pressure",
+                "length":1,
+                "data_type":"int8",
+                "decode_formula":"A"
+              },
+              "0x42":{
+                "comment": "控制模块电压, 0~65.535V",
+                "tag":"ctrl_module_voltage",
+                "length":2,
+                "data_type":"int16",
+                "decode_formula":"A/1000"
+              },
+              "0x46":{
+                "comment": "环境温度, -40~215℃",
+                "tag":"air_temperature",
+                "length":1,
+                "data_type":"int8",
+                "decode_formula":"A-40"
+              },
+              "0x47":{
+                "comment": "油门位置B, 0~100%",
+                "tag":"throttle_position_b",
+                "length":1,
+                "data_type":"int8",
+                "decode_formula":"A/2.55"
+              },
+              "0x48":{
+                "comment": "油门位置C, 0~100%",
+                "tag":"throttle_position_c",
+                "length":1,
+                "data_type":"int8",
+                "decode_formula":"A/2.55"
+              },
+              "0x5A":{
+                "comment": "相对加速踏板位置, 0~100%",
+                "tag":"pedal_position",
+                "length":1,
+                "data_type":"int8",
+                "decode_formula":"A/2.55"
+              },
+              "0x5C":{
+                "comment": "机油温度, -40~215℃",
+                "tag":"oil_temperature",
+                "length":1,
+                "data_type":"int8",
+                "decode_formula":"A-40"
+              }
+            }
+          }
+        }
+      }
+    },
+    "client_param_setting":{
+      "comment": "设置终端参数，参数项列表",
+      "pos": 0,
+      "length": null,
+      "repeat":true,
+      "data_type": "param_setting_list",
+      "required":true
+    },
+    "param_setting_list":{
+      "comment": "设置终端参数，参数项列表",
+      "byte_fields": {
+        "param_id": {
+          "comment": "参数ID",
+          "pos": 0,
+          "length": 1,
+          "data_type": "int8",
+          "required":true
+        },
+        "data_length":{
+          "comment": "数据长度",
+          "pos": 1,
+          "data_type": "int8",
+          "required":true
+        },
+        "data":{
+          "comment": "参数数据",
+          "pos": 2,
+          "data_type": "param_setting_item",
+          "required":true
+        }
+      }
+    },
+    "param_setting_item": {
+      "comment": "参数设置数据值项",
+      "byte_fields": {
+        "one_of": {
+          "key": {
+            "comment": "参数设置数据记录项检索键",
+            "name": "param_id",
+	    "format":"0x%02X"
+          },
+          "list": {
+            "comment": "参数设置数据值格式定义",
+            "data": {
+              "0x01":{
+                "comment": "终端心跳发送间隔，单位为秒（s）",
+                "tag":"heart_beat_interval",
+                "length":2,
+                "data_type":"int16"
+              },
+              "0x02":{
+                "comment": "TCP 消息应答超时时间，单位为秒(s)",
+                "tag":"response_timeout",
+                "length":2,
+                "data_type":"int16"
+              },
+              "0x03":{
+                "comment": "TCP 消息重传次数。",
+                "tag":"resend_count",
+                "length":2,
+                "data_type":"int16"
+              },
+              "0x11":{
+                "comment": "主服务器地址,IP 或域名",
+                "tag":"main_server",
+                "length":"data_length",
+                "data_type":"bytes"
+              },
+              "0x12":{
+                "comment": "备份服务器地址,IP 或域名。",
+                "tag":"backup_server",
+                "length":"data_length",
+                "data_type":"bytes"
+              },
+              "0x13":{
+                "comment": "服务器 TCP 端口。",
+                "tag":"server_port",
+                "length":2,
+                "data_type":"int16"
+              }
+            }
+          }
+        }
+      }
+    },
+    "client_param_query_response":{
+      "comment": "查询终端参数应答",
+      "byte_fields":{
+        "response_flow_id":{
+          "comment": "应答流水号",
+          "pos": 0,
+          "length": 2,
+          "data_type": "int16",
+          "required":true
+        },
+        "client_param_setting":{
+          "comment": "终端参数列表",
+          "pos": 2,
+          "length": null,
+          "data_type": "param_setting_list",
+          "required":true
+        }
+      }
+    },
+    "client_property_query_response":{
+      "comment": "查询终端属性应答",
+      "byte_fields":{
+        "response_flow_id":{
+          "comment": "应答流水号",
+          "pos": 0,
+          "length": 2,
+          "data_type": "int16",
+          "required":true
+        },
+        "client_properties":{
+          "comment": "终端属性列表",
+          "pos": 2,
+          "length": null,
+          "repeat":true,
+          "data_type": "client_property_list",
+          "required":true
+        }
+      }
+    },
+    "client_property_list":{
+      "comment": "终端属性项列表",
+      "byte_fields": {
+        "property_id": {
+          "comment": "属性ID",
+          "pos": 0,
+          "length": 1,
+          "data_type": "int8",
+          "required":true
+        },
+        "data_length":{
+          "comment": "数据长度",
+          "pos": 1,
+          "data_type": "int8",
+          "required":true
+        },
+        "data":{
+          "comment": "属性数据",
+          "pos": 2,
+          "data_type": "client_property_item",
+          "required":true
+        }
+      }
+    },
+    "client_property_item": {
+      "comment": "属性数据格式定义",
+      "byte_fields": {
+        "one_of": {
+          "key": {
+            "comment": "属性数据格式定义检索键",
+            "name": "property_id",
+	    "format":"0x%02X"
+          },
+          "list": {
+            "comment": "属性数据格式定义",
+            "data": {
+              "0x01":{
+                "comment": "终端id",
+                "tag":"client_id",
+                "length":10,
+                "data_type":"bytes"
+              },
+              "0x02":{
+                "comment": "固件版本号",
+                "tag":"client_version",
+                "length":4,
+                "data_type":"int32"
+              }
+            }
+          }
+        }
+      }
+    },
+    "client_control":{
+      "comment": "终端控制",
+      "byte_fields": {
+         "command_id":{
+           "comment": "命令ID",
+           "pos": 0,
+           "lengtn":1,
+           "data_type": "int8",
+           "required":true
+         },
+        "data_length":{
+          "comment": "命令参数长度",
+          "pos": 1,
+          "lengtn":1,
+          "data_type": "int8",
+          "required":false
+        },
+        "command_data":{
+          "comment": "命令参数,比如，固件升级，则是URL",
+          "pos": 1,
+          "lengtn":"data_length",
+          "data_type": "int8",
+          "required":false
+        }
+      }
+    }
+  }
+}

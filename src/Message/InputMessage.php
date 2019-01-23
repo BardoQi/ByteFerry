@@ -11,7 +11,7 @@ namespace ByteFerry\Message;
 
 use ByteFerry\Utils\TreeMap;
 use ByteFerry\Stream\InputStream;
-use ByteFerry\Schema\InputSchema;
+use ByteFerry\Schema\Schema;
 use ByteFerry\Utils\TreeNodeInterface;
 
 abstract class InputMessage extends TreeMap implements TreeNodeInterface

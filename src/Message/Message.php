@@ -13,5 +13,8 @@ namespace ByteFerry\Message;
 
 class Message
 {
+    private $schema;
+
+    private $stream;
 
 }

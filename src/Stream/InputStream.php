@@ -19,25 +19,78 @@ use ByteFerry\Exceptions\InvalidArgumentException;
  */
 class InputStream extends StreamIo
 {
-
     /**
+     * Methods of primitive types
+     */
+    /**
+     * alias of method readInt8()
      * @method readByte()
+     */
+    /**
+     * alias of method readInt8()
      * @method readChar()
+     */
+    /**
+     * alias of method readInt8()
      * @method readShort()
+     */
+    /**
+     * alias of method readInt16()
      * @method readWord()
+     */
+    /**
+     * alias of method readInt16()
      * @method readInt()
+     */
+    /**
+     * alias of method readInt32()
      * @method readDword()
+     */
+    /**
+     * alias of method readInt32()
      * @method readLong()
+     */
+    /**
+     * alias of method skipInt8()
      * @method skipChar()
+     */
+    /**
+     * alias of method skipInt8()
      * @method skipByte()
+     */
+    /**
+     * alias of method skipInt8()
      * @method skipInt8()
+     */
+    /**
+     * alias of method skipInt8()
      * @method skipShort()
+     */
+    /**
+     * alias of method skipInt16()
      * @method skipWord()
+     */
+    /**
+     * alias of method skipInt16()
      * @method skipInt16()
+     */
+    /**
+     * alias of method skipInt32()
      * @method skipInt()
+     */
+    /**
+     * alias of method skipInt32()
      * @method skipInt32()
+     */
+    /**
+     * alias of method skipInt32()
      * @method skipDword()
+     */
+    /**
+     * alias of method skipInt64()
      * @method skipLong()
+    /**
+     * alias of method skipInt64()
      * @method skipInt64()
      */
 

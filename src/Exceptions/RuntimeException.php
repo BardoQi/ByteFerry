@@ -27,4 +27,5 @@ class RuntimeException extends AbstractRuntimeException
         return new self('Object is read only');
     }
 
+
 }

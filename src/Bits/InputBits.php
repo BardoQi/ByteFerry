@@ -1,5 +1,13 @@
 <?php
 /**
+ **************************************************************
+ *        ___         __        ____
+ *       / _ ) __ __ / /_ ___  / __/___  ____ ____ __ __
+ *      / _  |/ // // __// -_)/ _/ / -_)/ __// __// // /
+ *     /____/ \_, / \__/ \__//_/   \__//_/  /_/   \_, /
+ *           /___/                               /___/
+ *
+ **************************************************************
  * InputBits class file
  *
  * @author Bardo Qi <bardoqi@gmail.com>
@@ -65,5 +73,16 @@ class InputBits extends Bits
         }
         return $ret;
     }
+
+    /**
+     * @param int $length
+     * @return int
+     */
+    public function readInt($length=1){
+         return $this->read($length);
+    }
+
+
+
 
 }
