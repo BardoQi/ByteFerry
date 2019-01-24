@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Bardo
- * Date: 2019-01-24
- * Time: 0:59
- */
 
 namespace ByteFerry\Packet;
 
@@ -54,6 +48,15 @@ class TreeData
         //format key
         //return from $oneOfDef['list']['data'][$key]
     }
+
+    public function repeat(){
+
+    }
+
+    public function format($key,$format){
+
+    }
+
 
 
 
