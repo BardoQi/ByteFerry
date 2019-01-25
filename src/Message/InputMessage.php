@@ -14,15 +14,15 @@ use ByteFerry\DataDiagram\DataNode;
 
 class InputMessage
 {
-    public $dataNodes = [];
+    public $data_nodes = [];
 
     public $schema;
 
-    public function getNode($typeName){
-        if (!isset($this->dataNodes[$typeName])){
-            $data_array = $this->schema->getNode($typeName);
-            $this->dataNodes[$typeName] = new DataNode($data_array);
+    public function getNode($type_name){
+        if (!isset($this->dataNodes[$type_name])){
+            $data_array = $this->schema->getNode($type_name);
+            $this->data_nodes[$type_name] = new DataNode($data_array);
         }
-        return clone($this->dataNodes[$typeName]);
+        return clone($this->dataNodes[$type_name]);
     }
 }

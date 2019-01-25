@@ -35,26 +35,25 @@ class InputBits extends Bits
     }
 
     /**
-     * @param string $str
+     * @param string $str_buffer
      * @return InputBits
      */
-    public static function ofString($str){
-        $byteArray = str_split($str);
+    public static function ofString($str_buffer){
+        $byte_array = str_split($str_buffer);
         $bin='';
-        foreach ($byteArray as $character) {
+        foreach ($byte_array as $character) {
             $bin .= sprintf('%08b', ord($character));
         }
         return new self($bin);
     }
 
     /**
-     * @param string $byts
+     * @param array $byte_array
      * @return InputBits
      */
-    public static function ofByte($byts){
-        $byteArray = str_split($byts);
+    public static function ofByte($byte_array){
         $bin='';
-        foreach ($byteArray as $character) {
+        foreach ($byte_array as $character) {
             $num =$value = unpack('C', $character)[1];
             $bin .= sprintf('%08b', $num);
         }
@@ -69,7 +68,7 @@ class InputBits extends Bits
         $ret=0;
         for($i=0;$i<$length;$i++){
             $ret =($ret << 1);
-            $ret += $this->binArry[$this->position++];
+            $ret += $this->bin_arry[$this->position++];
         }
         return $ret;
     }

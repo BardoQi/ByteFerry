@@ -212,16 +212,16 @@ class OutputStream extends StreamIo
 
     /**
      * Create a new stream based on given string.
-     * @param string $pathFileName
-     * @param string $stringBuffer
+     * @param string $path_file_name
+     * @param string $string_buffer
      * @param array $options Additional options
      * @return static
      */
-    public static function ofFile($pathFileName, $stringBuffer = '', $options = []){
+    public static function ofFile($path_file_name, $string_buffer = '', $options = []){
 
-        $stream = fopen($pathFileName, 'W+b');
-        if ($stringBuffer !== '') {
-            fwrite($stream, $stringBuffer);
+        $stream = fopen($path_file_name, 'W+b');
+        if ($string_buffer !== '') {
+            fwrite($stream, $string_buffer);
             fseek($stream, 0);
         }
         return new static($stream, $options);
@@ -230,15 +230,15 @@ class OutputStream extends StreamIo
 
     /**
      * Create a new stream based on given string.
-     * @param string $stringBuffer
+     * @param string $string_buffer
      * @param array $options Additional options
      * @return static
      */
-    public static function ofString($stringBuffer = '', $options = []){
+    public static function ofString($string_buffer = '', $options = []){
 
         $stream = fopen('php://memory', 'W+b');
-        if ($stringBuffer !== '') {
-            fwrite($stream, $stringBuffer);
+        if ($string_buffer !== '') {
+            fwrite($stream, $string_buffer);
             fseek($stream, 0);
         }
         return new static($stream, $options);
@@ -259,15 +259,15 @@ class OutputStream extends StreamIo
 
     /**
      * Create a new stream based on given string.
-     * @param string $stringBuffer
+     * @param string $string_buffer
      * @param array $options Additional options
      * @return static
      */
-    public static function ofTempFile($stringBuffer = '', $options = []){
+    public static function ofTempFile($string_buffer = '', $options = []){
 
         $stream = fopen('php://temp', 'W+b');
-        if ($stringBuffer !== '') {
-            fwrite($stream, $stringBuffer);
+        if ($string_buffer !== '') {
+            fwrite($stream, $string_buffer);
             fseek($stream, 0);
         }
         return new static($stream, $options);
@@ -276,15 +276,15 @@ class OutputStream extends StreamIo
 
     /**
      * Create a new stream based on given string.
-     * @param string $stringBuffer
+     * @param string $string_buffer
      * @param array $options Additional options
      * @return static
      */
-    public static function ofMemory($stringBuffer = '', $options = []){
+    public static function ofMemory($string_buffer = '', $options = []){
 
         $stream = fopen('php://memory', 'W+b');
-        if ($stringBuffer !== '') {
-            fwrite($stream, $stringBuffer);
+        if ($string_buffer !== '') {
+            fwrite($stream, $string_buffer);
             fseek($stream, 0);
         }
         return new static($stream, $options);
@@ -315,9 +315,9 @@ class OutputStream extends StreamIo
     public function write($data, $length = null)
     {
         if ($length === null) {
-            return fwrite($this->_streamHandle, $data);
+            return fwrite($this->_stream_handle, $data);
         } else {
-            return fwrite($this->_streamHandle, $data, $length);
+            return fwrite($this->_stream_handle, $data, $length);
         }
     }
 

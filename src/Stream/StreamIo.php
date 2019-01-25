@@ -69,7 +69,7 @@ class StreamIo
     /**
      * @var resource
      */
-    protected $_streamHandle;
+    protected $_stream_handle;
 
 
     /**
@@ -82,7 +82,7 @@ class StreamIo
      * alias of base type
      * @var array
      */
-    protected $typeAlias = [
+    protected $type_alias = [
         'char'=>'int8',
         'byte'=>'int8',
         'short'=>'int16',
@@ -92,7 +92,7 @@ class StreamIo
         'long'=>'int64',
     ];
 
-    private $streamType;
+    private $stream_type;
 
     private $lengthMap = [
         'char'	=>1,
@@ -114,16 +114,16 @@ class StreamIo
      * Stream constructor.
      * @param resource $stream Stream resource to wrap.
      * @param array $options Associative array of options.
-     * @param string $streamType Stream type(RESOURCE,OBJECT,STRING,FILE,TEMP_FILE,MEMORY)
+     * @param string $stream_type Stream type(RESOURCE,OBJECT,STRING,FILE,TEMP_FILE,MEMORY)
      */
-    protected function __construct($stream, $options = [], $streamType = null)
+    protected function __construct($stream, $options = [], $stream_type = null)
     {
         if (!is_resource($stream)) {
             throw InvalidArgumentException::StreamMustBeResource();
         }
-        $this->_streamHandle = $stream;
+        $this->_stream_handle = $stream;
         $this->options = $options;
-        $this->streamType = $streamType;
+        $this->stream_type = $stream_type;
         $this->system_endianness = $options['endianness'];
         $this->machine_endianness = $this->getMachineEndianness();
     }
@@ -143,7 +143,7 @@ class StreamIo
      */
     public function getMetaData()
     {
-        return stream_get_meta_data($this->_streamHandle);
+        return stream_get_meta_data($this->_stream_handle);
     }
 
     /**
@@ -152,7 +152,7 @@ class StreamIo
      */
     public function getResource()
     {
-        return $this->_streamHandle;
+        return $this->_stream_handle;
     }
 
     /**
@@ -161,10 +161,10 @@ class StreamIo
      */
     public function size()
     {
-        $currPos = ftell($this->_streamHandle);
-        fseek($this->_streamHandle, 0, SEEK_END);
-        $length = ftell($this->_streamHandle);
-        fseek($this->_streamHandle, $currPos, SEEK_SET);
+        $currPos = ftell($this->_stream_handle);
+        fseek($this->_stream_handle, 0, SEEK_END);
+        $length = ftell($this->_stream_handle);
+        fseek($this->_stream_handle, $currPos, SEEK_SET);
         return $length;
     }
 
@@ -178,7 +178,7 @@ class StreamIo
     public function allocate($length, $skip = true)
     {
         $stream = fopen('php://memory', 'r+');
-        if (stream_copy_to_stream($this->_streamHandle, $stream, $length)) {
+        if (stream_copy_to_stream($this->_stream_handle, $stream, $length)) {
             if ($skip) {
                 $this->skip($length);
             }
@@ -199,9 +199,9 @@ class StreamIo
             throw InvalidArgumentException::InvalidResourceType();
         }
         if ($length) {
-            return stream_copy_to_stream($resource, $this->_streamHandle, $length);
+            return stream_copy_to_stream($resource, $this->_stream_handle, $length);
         } else {
-            return stream_copy_to_stream($resource, $this->_streamHandle);
+            return stream_copy_to_stream($resource, $this->_stream_handle);
         }
     }
 
@@ -211,7 +211,7 @@ class StreamIo
      */
     public function offset()
     {
-        return ftell($this->_streamHandle);
+        return ftell($this->_stream_handle);
     }
 
     /**
@@ -225,7 +225,7 @@ class StreamIo
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        return fseek($this->_streamHandle, $offset, $whence);
+        return fseek($this->_stream_handle, $offset, $whence);
     }
 
     /**
@@ -234,7 +234,7 @@ class StreamIo
      */
     public function rewind()
     {
-        return rewind($this->_streamHandle);
+        return rewind($this->_stream_handle);
     }
 
     /**
@@ -251,8 +251,8 @@ class StreamIo
      */
     public function close()
     {
-        if (is_resource($this->_streamHandle)) {
-            fclose($this->_streamHandle);
+        if (is_resource($this->_stream_handle)) {
+            fclose($this->_stream_handle);
         }
     }
 
@@ -260,22 +260,22 @@ class StreamIo
     /**
      * Method for calling with alias:
      *
-     * @param $methodName
+     * @param $method_name
      * @param $args
      * @return mixed
      * @throws RuntimeException
      */
-    public function __call($methodName,$args){
+    public function __call($method_name,$args){
 
-        if (method_exists($this,$methodName)){
-            return call_user_func_array([$this,$methodName],$args);
+        if (method_exists($this,$method_name)){
+            return call_user_func_array([$this,$method_name],$args);
         }
 
-        if (preg_match('~^(read|write|insert|put|replace|skip)([A-Z])(.*)$~', $methodName, $matches)) {
+        if (preg_match('~^(read|write|insert|put|replace|skip)([A-Z])(.*)$~', $method_name, $matches)) {
             $type = strtolower($matches[2]) . $matches[3];
 
-            if (!isset($this->typeAlias[$type])) {
-                throw RuntimeException::MethodNotExists($methodName);
+            if (!isset($this->type_alias[$type])) {
+                throw RuntimeException::MethodNotExists($method_name);
 
             }
 
@@ -305,7 +305,7 @@ class StreamIo
      * @param $args
      * @return mixed
      */
-    public function call_by_type($action,$type,$args){
+    public function callByType($action,$type,$args){
         return call_user_func_array([$this,$action. ucfirst($type)],$args);
     }
 

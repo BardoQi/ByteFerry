@@ -40,25 +40,25 @@ class Schema
      * @param $array
      * @param $dataNode
      */
-    private function __construct($name,$array,$dataNode)
+    private function __construct($name,$array,$data_node)
     {
         $this->name = $name;
         $this->schema_def = $array;
-        $this->dataNode = $dataNode;
+        $this->dataNode = $data_node;
     }
 
     /**
-     * @param $name
-     * @param $schema_file
-     * @param $dataNode
+     * @param string $name
+     * @param string $schema_file
+     * @param DataNode $dataNode
      * @return mixed
      * @throws SchemaException
      */
-    public static function getInstance($name,$schema_file,$dataNode){
+    public static function getInstance($name,$schema_file,$data_node){
         if (!isset(self::$instance[$name])){
             if (is_file($schema_file)){
                 $schema_array = self::readSchemaFile($schema_file);
-                self:$instance[$name] = new self($name,$schema_array,$dataNode);
+                self:$instance[$name] = new self($name,$schema_array,$data_node);
             }else{
                 Throw SchemaException::schemaFileReadFail();
             }
@@ -67,7 +67,7 @@ class Schema
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @return bool
      * @throws SchemaException
      */
@@ -96,23 +96,23 @@ class Schema
     private function __clone(){}
 
     /**
-     * @param $typeName
+     * @param string $type_name
      * @return bool
      */
-    public function typeIsSet($typeName){
-        return isset($this->schema_def['type_list'][$typeName]);
+    public function typeIsSet($type_name){
+        return isset($this->schema_def['type_list'][$type_name]);
     }
 
     /**
-     * @param $typeName
+     * @param $type_name
      * @return bool
      * @throws SchemaException
      */
-    public function getType($typeName){
-        if(!isset($this->schema_def['type_list'][$typeName])){
+    public function getType($type_name){
+        if(!isset($this->schema_def['type_list'][$type_name])){
             Throw SchemaException::typeNotFound();
         }
-        return $this->schema_def[$typeName];
+        return $this->schema_def[$type_name];
     }
 
     /**
@@ -120,14 +120,14 @@ class Schema
      * @return bool
      * @throws SchemaException
      */
-    public function getNode($typeName){
-        if(!isset($this->data_nodes[$typeName])){
-            if(!isset($this->schema_def['type_list'][$typeName])){
+    public function getNode($type_name){
+        if(!isset($this->data_nodes[$type_name])){
+            if(!isset($this->schema_def['type_list'][$type_name])){
                 Throw SchemaException::typeNotFound();
             }
-            $this->initNode($typeName);
+            $this->initNode($type_name);
         }
-        return clone($this->data_nodes[$typeName]);
+        return clone($this->data_nodes[$type_name]);
     }
 
     /**
@@ -135,11 +135,11 @@ class Schema
      * @return bool
      * @throws SchemaException
      */
-    private function initNode($typeName){
-        $def_array = $this->getType($typeName);
-        $node = clone($this->dataNode);
-        $node->init_data($def_array);
-        $this->data_nodes[$typeName] = $node;
+    private function initNode($type_name){
+        $def_array = $this->getType($type_name);
+        $node = clone($this->data_nodes[$type_name]);
+        $node->initData($def_array);
+        $this->data_nodes[$type_name] = $node;
         return true;
     }
 

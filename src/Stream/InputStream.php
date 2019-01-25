@@ -99,11 +99,11 @@ class InputStream extends StreamIo
      * Stream constructor.
      * @param resource $stream Stream resource to wrap.
      * @param array $options Associative array of options.
-     * @param string $streamType Type of stream.
+     * @param string $stream_type Type of stream.
      */
-    protected function __construct($stream, $options = [], $streamType = null)
+    protected function __construct($stream, $options = [], $stream_type = null)
     {
-        parent::__construct($stream, $options,$streamType);
+        parent::__construct($stream, $options,$stream_type);
     }
 
     /**
@@ -128,16 +128,16 @@ class InputStream extends StreamIo
 
     /**
      * Create a new stream based on given string.
-     * @param string $pathFileName
-     * @param string $stringBuffer
+     * @param string $path_file_name
+     * @param string $string_buffer
      * @param array $options Additional options
      * @return static
      */
-    public static function ofFile($pathFileName, $stringBuffer = '', $options = []){
+    public static function ofFile($path_file_name, $string_buffer = '', $options = []){
 
-        $stream = fopen($pathFileName, 'W+b');
-        if ($stringBuffer !== '') {
-            fwrite($stream, $stringBuffer);
+        $stream = fopen($path_file_name, 'W+b');
+        if ($string_buffer !== '') {
+            fwrite($stream, $string_buffer);
             fseek($stream, 0);
         }
         return new self($stream, $options,'FILE');
@@ -146,22 +146,22 @@ class InputStream extends StreamIo
 
     /**
      * Create a new stream based on given string.
-     * @param string $stringBuffer
+     * @param string $string_buffer
      * @param array $options Additional options
-     * @param string $streamType Type of stream
+     * @param string $stream_type Type of stream
      * @return static
      */
-    public static function ofString($stringBuffer = '', $options = [], $streamType = null){
+    public static function ofString($string_buffer = '', $options = [], $stream_type = null){
 
         $stream = fopen('php://temp', 'r+');
-        if ($stringBuffer !== '') {
-            fwrite($stream, $stringBuffer);
+        if ($string_buffer !== '') {
+            fwrite($stream, $string_buffer);
             fseek($stream, 0);
         }
         if ($streamType == null){
             $streamType  = 'STRING' ;
         }
-        return new self($stream, $options,$streamType);
+        return new self($stream, $options,$stream_type);
 
     }
 
@@ -179,15 +179,15 @@ class InputStream extends StreamIo
 
     /**
      * Create a new stream based on given string.
-     * @param string $stringBuffer
+     * @param string $string_buffer
      * @param array $options Additional options
      * @return static
      */
-    public static function ofTempFile($stringBuffer = '', $options = []){
+    public static function ofTempFile($string_buffer = '', $options = []){
 
         $stream = fopen('php://temp', 'W+b');
-        if ($stringBuffer !== '') {
-            fwrite($stream, $stringBuffer);
+        if ($string_buffer !== '') {
+            fwrite($stream, $string_buffer);
             fseek($stream, 0);
         }
         return new self($stream, $options,'TEMP_FILE');
@@ -196,15 +196,15 @@ class InputStream extends StreamIo
 
     /**
      * Create a new stream based on given string.
-     * @param string $stringBuffer
+     * @param string $string_buffer
      * @param array $options Additional options
      * @return static
      */
-    public static function ofMemory($stringBuffer = '', $options = []){
+    public static function ofMemory($string_buffer = '', $options = []){
 
         $stream = fopen('php://memory', 'W+b');
-        if ($stringBuffer !== '') {
-            fwrite($stream, $stringBuffer);
+        if ($string_buffer !== '') {
+            fwrite($stream, $string_buffer);
             fseek($stream, 0);
         }
         return new self($stream, $options,'MEMORY');
@@ -233,7 +233,7 @@ class InputStream extends StreamIo
      */
     public function read($length = null)
     {
-        return stream_get_contents($this->_streamHandle, $length, $this->offset());
+        return stream_get_contents($this->_stream_handle, $length, $this->offset());
     }
 
     /**
@@ -261,7 +261,7 @@ class InputStream extends StreamIo
         if ($length === null) {
             $length = $this->size();
         }
-        return stream_get_line($this->_streamHandle, $length, $ending);
+        return stream_get_line($this->_stream_handle, $length, $ending);
     }
 
     /**
@@ -367,9 +367,9 @@ class InputStream extends StreamIo
      * @param int $byteLength
      * @return string
      */
-    public function readBcd8421($byteLength){
+    public function readBcd8421($byte_length){
 
-        $bytes = $this->read($byteLength);
+        $bytes = $this->read($byte_length);
         $temp = [];
         for ($i = 0; $i < count($bytes); $i++) {
             $temp[] = ((ord($bytes[$i]) & 0xf0) >> 4);

@@ -19,8 +19,8 @@ class RuntimeException extends AbstractRuntimeException
         return new self('Buffer allocation failed');
     }
 
-    public static function MethodNotExists($methodName){
-        return new self(sprintf('Method %s not exists.',$methodName));
+    public static function MethodNotExists($method_name){
+        return new self(sprintf('Method %s not exists.',$method_name));
     }
 
     public static function ObjectIsReadOnly(){

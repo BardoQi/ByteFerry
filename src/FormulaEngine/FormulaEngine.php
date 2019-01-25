@@ -44,13 +44,13 @@ class FormulaEngine
                 $pos = strpos($formula, $value, $pos);
                 $formula = substr_replace($formula, '$', $pos, 0);
                 $pos += strlen($value) + 1;
-                $varArray[$value] = $variables[$value];
+                $var_array[$value] = $variables[$value];
             }else{
                 throw new \Exception($value . ' not fund!');
             }
         }
-        $result = function($varArray) use ($formula) {
-            extract($varArray);
+        $result = function($var_array) use ($formula) {
+            extract($var_array);
             return @eval($formula);
         };
 

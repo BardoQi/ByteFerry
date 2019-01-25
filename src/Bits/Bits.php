@@ -32,9 +32,9 @@ class Bits implements ArrayAccess,Iterator,Countable
 {
 
     /**
-     * @var array $binArray
+     * @var array $bin_array
      */
-    protected $binArray=[];
+    protected $bin_array=[];
 
     /**
      * @var int $position
@@ -48,7 +48,7 @@ class Bits implements ArrayAccess,Iterator,Countable
      */
     protected function __construct($bin)
     {
-        $this->binArry = array_reverse((array)$bin) ;
+        $this->bin_array = array_reverse((array)$bin) ;
         $this->position = 0;
     }
 
@@ -59,9 +59,9 @@ class Bits implements ArrayAccess,Iterator,Countable
     public function offsetSet($offset, $value) {
         if (is_subclass_of($this,"InputBits")){
             if (is_null($offset)) {
-                $this->binArry[] = $value;
+                $this->bin_array[] = $value;
             } else {
-                $this->binArry[$offset] = $value;
+                $this->bin_array[$offset] = $value;
             }
         }else{
             Throw RuntimeException::ObjectIsReadOnly();
@@ -73,7 +73,7 @@ class Bits implements ArrayAccess,Iterator,Countable
      * @return bool
      */
     public function offsetExists($offset) {
-        return isset($this->binArray[$offset]);
+        return isset($this->bin_array[$offset]);
     }
 
     /**
@@ -81,7 +81,7 @@ class Bits implements ArrayAccess,Iterator,Countable
      */
     public function offsetUnset($offset) {
         if (is_subclass_of($this,"InputBits")){
-            unset($this->binArray[$offset]);
+            unset($this->bin_array[$offset]);
         }else{
             Throw RuntimeException::ObjectIsReadOnly();
         }
@@ -92,14 +92,14 @@ class Bits implements ArrayAccess,Iterator,Countable
      * @return null
      */
     public function offsetGet($offset) {
-        return isset($this->binArray[$offset]) ? $this->binArray[$offset] : null;
+        return isset($this->bin_array[$offset]) ? $this->bin_array[$offset] : null;
     }
 
     /**
      * @return int
      */
     public function count(){
-        return count($this->binArray);
+        return count($this->bin_array);
     }
 
     /**
@@ -113,7 +113,7 @@ class Bits implements ArrayAccess,Iterator,Countable
      * @return mixed
      */
     function current() {
-        return $this->binArray[$this->position];
+        return $this->bin_array[$this->position];
     }
 
     /**

@@ -24,9 +24,13 @@ class DataNode
 
     public $name;
 
-    public $chillren=[];
+    public $byte_fields = [];
 
-    public $chillren_type=[];
+    public $bit_fields = [];
+
+    public $children=[];
+
+    public $children_type=[];
 
     public $before_event=[];
 
@@ -50,8 +54,7 @@ class DataNode
 
     public $properties=[];
 
-
-
+    public $validate;
 
     public $level;
 
@@ -63,6 +66,10 @@ class DataNode
 
     private $_bits;
 
+    public $_is_valid = false;
+
+    public $_string_buffer;
+
     /**
      * DataNode constructor.
      */
@@ -70,10 +77,33 @@ class DataNode
 
     }
 
+    public function decode($string_buffer,$parent,$level){
+        $this->_string_buffer = $string_buffer;
+        $this->_parent = $parent;
+        $this->level = $level;
+        if ((null != $this->_parent)&&(!empty($this->_parent->validate))){
+          if(false === $this->_parent->_is_valid){
+             if(false === $this->_parent->validate()){
+                 return false;
+             }
+          }
+        }
+        $this->reader($string_buffer);
+        if (!empty($this->children)){
+            foreach($this->children as  $val){
+
+            }
+        }
+    }
+
+    public function reader($string_buffer){
+
+    }
+
     /**
      * @param $data_array
      */
-    public function init_data($data_array){
+    public function initData($data_array){
         foreach($data_array as $key => $value){
             if(property_exists($this , $key)){
                 $this->$key = $value;
@@ -104,7 +134,7 @@ class DataNode
         $children = null;
         if(!empty($this->children)){
             if(true == $this->assemble){
-                $children = $this->asm_values();
+                $children = $this->asmValues();
             }else{
                 $children = [];
                 foreach ($this->children as $val){
@@ -117,7 +147,7 @@ class DataNode
             'comment' => $this->comment,
             'tag' => $this->tag,
             'name' => $this->name,
-            'value' => $this->decode_with_formula(),
+            'value' => $this->decodeWithFormula(),
             $children_name => $children
         ];
         return $return_array;
@@ -150,17 +180,17 @@ class DataNode
     /**
      * @return mixed
      */
-    public function asm_values(){
-        $method = "asm_as" . $this->assemble_type;
+    public function asmValues(){
+        $method = "asmAs" . ucfirst($this->assemble_type);
         return $this->$method();
     }
 
     /**
      * @return string
      */
-    public function asm_as_string(){
+    public function asmAsString(){
         $return_string = "";
-        foreach($this->chillren as $value){
+        foreach($this->children as $value){
             $return_string .= (string)$value;
         }
         return $return_string;
@@ -170,7 +200,7 @@ class DataNode
      * @return mixed
      * @throws \Exception
      */
-    public function decode_with_formula(){
+    public function decodeWithFormula(){
         if (!empty($this->decode_formula)){
             return $this->value = FormulaEngine::calculate($this->decode_formula,['A' => $this->value]);
         }
@@ -181,7 +211,7 @@ class DataNode
      * @return mixed
      * @throws \Exception
      */
-    public function encode_with_formula(){
+    public function encodeWithFormula(){
         if (!empty($this->encode_formula)){
             return $this->value = FormulaEngine::calculate($this->encode_formula,['A' => $this->value]);
         }
@@ -189,7 +219,9 @@ class DataNode
     }
 
 
-    public function one_of($oneOfDef){
+
+
+    public function oneOf($one_of_def){
         //getKey
         //format key
         //return from $oneOfDef['list']['data'][$key]

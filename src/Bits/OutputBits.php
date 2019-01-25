@@ -51,7 +51,7 @@ class OutputBits extends Bits
      */
     public function write($value,$length){
         for($i=0;$i<$length;$i++){
-            $this->binArry[$this->position++] = ($value & 1);
+            $this->bin_arry[$this->position++] = ($value & 1);
             $value = ($value >> 1);
         }
     }
@@ -60,7 +60,7 @@ class OutputBits extends Bits
      * @return number
      */
     public function getValue(){
-        return(bindec(implode("",array_reverse($this->binArray))));
+        return(bindec(implode("",array_reverse($this->bin_arry))));
     }
 
 
