@@ -9,12 +9,10 @@
 
 namespace ByteFerry\Message;
 
-use ByteFerry\Utils\TreeMap;
 use ByteFerry\Stream\OutputStream;
-use ByteFerry\Schema\OutputSchema;
-use ByteFerry\Utils\TreeNodeInterface;
+use ByteFerry\Schema\Schema;
 
-abstract class OutputMessage extends TreeMap implements TreeNodeInterface
+class OutputMessage
 {
 
     public function __construct()

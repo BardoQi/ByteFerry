@@ -14,26 +14,51 @@ use ByteFerry\Exceptions\SchemaException;
 class Schema
 {
 
+    /**
+     * @var array of schema definition
+     */
     protected $schema_def=[];
 
+    /**
+     * @var array of DataNode with key of data_type
+     */
+    protected $data_nodes=[];
+
+    /**
+     * @var array of Schema Object
+     */
     private static $instance = [];
 
-    private function __construct($name,$array)
+    /**
+     * @var DataNode
+     */
+    private $dataNode;
+
+    /**
+     * Schema constructor.
+     * @param $name
+     * @param $array
+     * @param $dataNode
+     */
+    private function __construct($name,$array,$dataNode)
     {
-        $this->schema_def=$array;
+        $this->name = $name;
+        $this->schema_def = $array;
+        $this->dataNode = $dataNode;
     }
 
     /**
      * @param $name
      * @param $schema_file
+     * @param $dataNode
      * @return mixed
      * @throws SchemaException
      */
-    public function getInstance($name,$schema_file){
+    public static function getInstance($name,$schema_file,$dataNode){
         if (!isset(self::$instance[$name])){
             if (is_file($schema_file)){
-                $schema_array = $this->readSchemaFile($schema_file);
-                self:$instance[$name] = new self($name,$schema_array);
+                $schema_array = self::readSchemaFile($schema_file);
+                self:$instance[$name] = new self($name,$schema_array,$dataNode);
             }else{
                 Throw SchemaException::schemaFileReadFail();
             }
@@ -46,7 +71,7 @@ class Schema
      * @return bool
      * @throws SchemaException
      */
-    private function readSchemaFile($path){
+    private static function readSchemaFile($path){
         try {
             $content = file_get_contents($path);
             if (false === $content ) {
@@ -68,9 +93,14 @@ class Schema
     /**
      * @return $this
      */
-    public function __clone()
-    {
-        return $this;
+    private function __clone(){}
+
+    /**
+     * @param $typeName
+     * @return bool
+     */
+    public function typeIsSet($typeName){
+        return isset($this->schema_def['type_list'][$typeName]);
     }
 
     /**
@@ -88,9 +118,30 @@ class Schema
     /**
      * @param $typeName
      * @return bool
+     * @throws SchemaException
      */
-    public function typeIsSet($typeName){
-        return isset($this->schema_def['type_list'][$typeName]);
+    public function getNode($typeName){
+        if(!isset($this->data_nodes[$typeName])){
+            if(!isset($this->schema_def['type_list'][$typeName])){
+                Throw SchemaException::typeNotFound();
+            }
+            $this->initNode($typeName);
+        }
+        return clone($this->data_nodes[$typeName]);
     }
+
+    /**
+     * @param $typeName
+     * @return bool
+     * @throws SchemaException
+     */
+    private function initNode($typeName){
+        $def_array = $this->getType($typeName);
+        $node = clone($this->dataNode);
+        $node->init_data($def_array);
+        $this->data_nodes[$typeName] = $node;
+        return true;
+    }
+
 
 }

@@ -8,13 +8,21 @@
  */
 
 namespace ByteFerry\Message;
-
-use ByteFerry\Utils\TreeMap;
 use ByteFerry\Stream\InputStream;
 use ByteFerry\Schema\Schema;
-use ByteFerry\Utils\TreeNodeInterface;
+use ByteFerry\DataDiagram\DataNode;
 
-abstract class InputMessage extends TreeMap implements TreeNodeInterface
+class InputMessage
 {
+    public $dataNodes = [];
 
+    public $schema;
+
+    public function getNode($typeName){
+        if (!isset($this->dataNodes[$typeName])){
+            $data_array = $this->schema->getNode($typeName);
+            $this->dataNodes[$typeName] = new DataNode($data_array);
+        }
+        return clone($this->dataNodes[$typeName]);
+    }
 }
